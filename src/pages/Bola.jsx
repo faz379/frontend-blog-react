@@ -8,7 +8,7 @@ function Bola() {
   useEffect(() => {
     async function fetchOlahragaPosts() {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts?category=bola`);
+        const response = await fetch(`http://103.174.114.55/api/posts?category=bola`);
         const data = await response.json();
         setPosts(data.data || []);
       } catch (error) {

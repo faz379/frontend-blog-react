@@ -9,7 +9,7 @@ const BlogPage = () => {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts`);
+        const response = await fetch(`http://103.174.114.55/api/posts`);
         const data = await response.json();
         // Filter untuk seminggu terakhir
         const now = new Date();

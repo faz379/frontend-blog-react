@@ -15,7 +15,7 @@ const PostDetailPage = () => {
 
     async function fetchPost() {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts/${slug}`);
+        const response = await fetch(`http://103.174.114.55/api/posts/${slug}`);
         const data = await response.json();
         console.log("Post fetched:", data); // log data post
         setPost(data.data);

@@ -13,7 +13,7 @@ const BlogPage = () => {
   // Fetch main blogs
   useEffect(() => {
     async function fetchBlogs() {
-      let url = `http://localhost:5000/api/posts?page=${currentPage}&limit=${pageSize}`;
+      let url = `http://103.174.114.55/api/posts?page=${currentPage}&limit=${pageSize}`;
       try {
         const response = await fetch(url);
         const data = await response.json();
@@ -28,7 +28,7 @@ const BlogPage = () => {
   // Fetch recommended blogs (misal 5 terbaru)
   useEffect(() => {
     async function fetchRecommended() {
-      let url = `http://localhost:5000/api/posts?page=1&limit=5`;
+      let url = `http://103.174.114.55/api/posts?page=1&limit=5`;
       try {
         const response = await fetch(url);
         const data = await response.json();
