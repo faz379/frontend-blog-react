@@ -8,7 +8,7 @@ function Teknologi() {
   useEffect(() => {
     async function fetchTeknologiPosts() {
       try {
-        const response = await fetch(`http://103.174.114.55/api/posts?category=teknologi`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts?category=teknologi`);
         const data = await response.json();
         setPosts(data.data || []);
       } catch (error) {

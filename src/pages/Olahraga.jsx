@@ -8,7 +8,7 @@ function Olahraga() {
   useEffect(() => {
     async function fetchOlahragaPosts() {
       try {
-        const response = await fetch(`http://103.174.114.55/api/posts?category=olahraga`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts?category=olahraga`);
         const data = await response.json();
         setPosts(data.data || []);
       } catch (error) {

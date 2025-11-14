@@ -15,7 +15,7 @@ const PostDetailPage = () => {
 
     async function fetchPost() {
       try {
-        const response = await fetch(`http://103.174.114.55/api/posts/${slug}`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts/${slug}`);
         const data = await response.json();
         console.log("Post fetched:", data); // log data post
         setPost(data.data);
@@ -26,7 +26,7 @@ const PostDetailPage = () => {
 
     async function fetchRecommendations() {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts`);
         const data = await response.json();
         console.log("All posts fetched:", data); // log semua posts
         const recs = data.data.filter(p => p.slug !== slug).slice(0, 5);

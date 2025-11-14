@@ -8,7 +8,7 @@ function Bisnis() {
   useEffect(() => {
     async function fetchBisnisPosts() {
       try {
-        const response = await fetch(`http://103.174.114.55/api/posts?category=bisnis`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts?category=bisnis`);
         const data = await response.json();
         setPosts(data.data || []);
       } catch (error) {

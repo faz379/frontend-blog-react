@@ -9,7 +9,7 @@ const BlogPage = () => {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const response = await fetch(`http://103.174.114.55/api/posts`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts`);
         const data = await response.json();
         // Filter untuk seminggu terakhir
         const now = new Date();
@@ -28,7 +28,7 @@ const BlogPage = () => {
   useEffect(() => {
     async function fetchRecommended() {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts`);
+        const response = await fetch(`https://api-bloghub.my.id/api/posts`);
         const data = await response.json();
         const now = new Date();
         const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
