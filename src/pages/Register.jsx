@@ -22,11 +22,20 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("https://api-bloghub.my.id/api/users/register", {
-        username: username,
-        email: email,
-        password: password,
-      });
+        const res = await axios.post(
+            "https://api-bloghub.my.id/api/users/register",
+            {
+              username: username,
+              email: email,
+              password: password,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          
 
       // Auto login
       login(res.data.data);
