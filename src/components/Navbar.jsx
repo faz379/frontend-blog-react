@@ -22,6 +22,7 @@ function Navbar() {
     { path: "/bisnis", link: "Bisnis" },
     { path: "/bola", link: "Bola" },
     { path: "/teknologi", link: "Teknologi" },
+    { path: "/login", link: "Login" },
 
   ];
 
@@ -49,7 +50,7 @@ function Navbar() {
                 <a href="/" className='hover:text-orange-500'><FaInstagram /></a>
                 <a href="/" className='hover:text-orange-500'><FaSquareGithub /></a>
                 <a href="/" className='hover:text-orange-500'><FaLinkedin /></a>
-                <button className='bg-orange-500 px-6 py-2 font-medium rounded hover:bg-white hover:text-black transition-all duration-200 ease-in'>Login</button>
+                <button href="/login" className='bg-orange-500 px-6 py-2 font-medium rounded hover:bg-white hover:text-black transition-all duration-200 ease-in'>Login</button>
             </div>
 
             {/**mobile menu btn, display mobile screen */}

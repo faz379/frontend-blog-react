@@ -1,0 +1,88 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+export default function Login() {
+    const navigate = useNavigate();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async (e) => {
+        e.preventDevault();
+        setLoading(true);
+
+        try {
+            const respone = await fetch('https://api-bloghub.my.id/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+            console.log("Server response", data);
+
+            if (!response.ok) {
+                alert(data.data || "Terjadi Kesalahan");
+                return;
+            }
+
+            if (!data.token) {
+                alert(data.data || "Login gagal, token tidak ditemukan");
+                return;
+            }
+
+            localStorage.setItem('token', data.token);
+            alert("Login berhasil");
+            navigate('/');
+
+        } catch (error) {
+            alert("Gagal koneksi ke server");
+            console.error(error);
+        }
+    };
+
+    return (
+        <div className="flex justify-center items-center h-screen bg-gray-100">
+          <form
+            onSubmit={handleLogin}
+            className="bg-white w-96 p-8 rounded-xl shadow-lg"
+          >
+            <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    
+            <label className="font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full border p-2 rounded mb-4"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+    
+            <label className="font-medium">Password</label>
+            <input
+              type="password"
+              className="w-full border p-2 rounded mb-4"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+    
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Login"}
+            </button>
+    
+            <p className="text-sm text-center mt-4">
+              Belum punya akun?{" "}
+              <Link to="/register" className="text-blue-600">
+                Register
+              </Link>
+            </p>
+          </form>
+        </div>
+      );
+}

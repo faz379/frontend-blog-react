@@ -14,6 +14,7 @@ import Bola from './pages/Bola.jsx';
 import News from './pages/News.jsx';
 import Teknologi from './pages/Teknologi.jsx'
 import PostDetailPage from './pages/PostDetailPage.jsx';
+import Login from './pages/Login.jsx'
 
 const router = createBrowserRouter([
   {
@@ -44,7 +45,14 @@ const router = createBrowserRouter([
         path: "teknologi",
         element: <Teknologi />,
       },
-      { path: "posts/:slug", element: <PostDetailPage /> }
+      { 
+        path: "posts/:slug", 
+        element: <PostDetailPage /> 
+      },
+      {
+        path: "login",
+        element: <Login />,
+      }
     ],
   },
 ]);
