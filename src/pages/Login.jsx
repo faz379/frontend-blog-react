@@ -39,7 +39,6 @@ export default function Login() {
       }
 
       localStorage.setItem('token', token);
-      alert("Login berhasil");
       navigate('/');
 
     } catch (error) {
