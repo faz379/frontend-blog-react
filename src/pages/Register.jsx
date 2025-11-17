@@ -1,108 +1,85 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import NotificationModal from "../components/NotificationModal";
-import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa6"; // <-- import ikon
 
-export default function Register() {
+export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPass, setShowPass] = useState(false); // <-- state untuk show/hide password
 
-  const [modal, setModal] = useState({
-    open: false,
-    title: "",
-    message: "",
-    type: "success",
-  });
-
-  const handleRegister = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!username || !email || !password) {
-      setModal({
-        open: true,
-        title: "Validation Error",
-        message: "All fields are required.",
-        type: "error",
-      });
-      return;
-    }
+    setErrorMsg("");
+    setLoading(true);
 
     try {
-      const res = await axios.post(
-        "https://api-bloghub.my.id/api/users/register",
-        { username, email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      setModal({
-        open: true,
-        title: "Registration Successful",
-        message: "Your account has been created. Redirecting to login...",
-        type: "success",
+      const response = await fetch("https://api-bloghub.my.id/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password }),
       });
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      const json = await response.json();
+      console.log("Response login:", json);
 
+      if (!response.ok) {
+        setErrorMsg(json.data || "Login failed");
+        return;
+      }
+
+      if (!json.data?.token) {
+        setErrorMsg("Email not registered or wrong password");
+        return;
+      }
+
+      login({
+        email: json.data.email,
+        token: json.data.token,
+      });
+
+      navigate("/");
     } catch (error) {
-      const msg = error.response?.data?.data || "Something went wrong. Please try again.";
-      setModal({
-        open: true,
-        title: "Registration Failed",
-        message: msg,
-        type: "error",
-      });
+      setErrorMsg("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <NotificationModal
-        isOpen={modal.open}
-        title={modal.title}
-        message={modal.message}
-        type={modal.type}
-        onClose={() => setModal({ ...modal, open: false })}
-      />
-
       <form
-        onSubmit={handleRegister}
-        className="bg-white p-8 rounded-xl shadow-md w-80"
+        className="bg-white w-96 p-8 rounded-xl shadow-lg"
+        onSubmit={handleLogin}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
-        <label>Username</label>
-        <input
-          type="text"
-          placeholder="Username"
-          className="w-full p-2 border rounded mb-3"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        {errorMsg && (
+          <p className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm text-center">
+            {errorMsg}
+          </p>
+        )}
 
         <label>Email</label>
         <input
           type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded mb-3"
-          value={email}
+          className="w-full border p-2 rounded mb-4"
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
 
         <label>Password</label>
-        <div className="relative mb-3">
+        <div className="relative mb-4">
           <input
-            type={showPass ? "text" : "password"}
-            placeholder="Password"
-            className="w-full p-2 border rounded"
-            value={password}
+            type={showPass ? "text" : "password"} // <-- toggle type
+            className="w-full border p-2 rounded"
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <span
             onClick={() => setShowPass(!showPass)}
@@ -114,10 +91,18 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full bg-orange-500 text-white py-2 rounded mt-3 hover:bg-orange-600 transition"
+          className="bg-orange-500 w-full py-2 rounded text-white hover:bg-orange-600 transition"
+          disabled={loading}
         >
-          Register
+          {loading ? "Loading..." : "Login"}
         </button>
+
+        <p className="mt-4 text-sm text-center">
+          Belum punya akun?{" "}
+          <Link to="/register" className="text-blue-600">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
