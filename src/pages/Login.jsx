@@ -25,12 +25,12 @@ export default function Login() {
       console.log("Response login:", json);
 
       if (!response.ok) {
-        setErrorMsg(json.data || "Login gagal");
+        setErrorMsg(json.data || "Login failed");
         return;
       }
 
       if (!json.data?.token) {
-        setErrorMsg("email tidak teregistrasi atau password salah");
+        setErrorMsg("Email not registered or wrong password");
         return;
       }
 
@@ -38,7 +38,7 @@ export default function Login() {
 
       navigate("/");
     } catch (error) {
-      setErrorMsg("Tidak dapat terhubung ke server");
+      setErrorMsg("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -82,6 +82,12 @@ export default function Login() {
         >
           {loading ? "Loading..." : "Login"}
         </button>
+        <p className="mt-4 text-sm text-center">
+          Belum punya akun?{" "}
+          <Link to="/register" className="text-blue-600">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
