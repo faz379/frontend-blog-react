@@ -36,7 +36,7 @@ export default function Login() {
         return;
       }
 
-      // ⬇⬇⬇ INI YANG PENTING
+      // INI YANG PENTING
       login({
         email: json.data.email,
         token: json.data.token,
