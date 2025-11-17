@@ -9,11 +9,11 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
-        e.preventDevault();
+        e.preventDefault();
         setLoading(true);
 
         try {
-            const respone = await fetch('https://api-bloghub.my.id/api/users/login', {
+            const response = await fetch('https://api-bloghub.my.id/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
