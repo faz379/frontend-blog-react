@@ -30,7 +30,7 @@ export default function Login() {
       }
 
       if (!json.data?.token) {
-        setErrorMsg("Token tidak ditemukan");
+        setErrorMsg("email tidak teregistrasi atau password salah");
         return;
       }
 
