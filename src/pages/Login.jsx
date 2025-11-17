@@ -1,67 +1,73 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // <-- state error
+  const { setToken } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    try {
-      const res = await fetch("https://api-bloghub.my.id/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, password: password }),
-      });
+    const response = await fetch("https://api-kamu.com/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
 
-      const result = await res.json();
-      console.log(result);
+    const result = await response.json();
+    console.log("server response:", result);
 
-      if (!result.data || !result.data.token) {
-        alert("Login gagal");
-        return;
-      }
-
-      login(result.data.token);
-      window.location.href = "/";
-    } catch (err) {
-      alert("Server error");
-    } finally {
-      setLoading(false);
+    if (result.code === 200) {
+      setToken(result.data.token);
+      setErrorMessage(""); // bersihkan error
+      navigate("/");
+    } else {
+      setErrorMessage(result.data); // <-- set dari backend
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form className="bg-white w-96 p-8 rounded-xl shadow-lg" onSubmit={handleLogin}>
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <div className="max-w-md mx-auto p-6 mt-20 bg-white rounded shadow">
+      <h1 className="text-2xl font-bold mb-4">Login</h1>
 
-        <label>Email</label>
+      {/* tampilkan error */}
+      {errorMessage && (
+        <p className="bg-red-100 text-red-700 p-3 mb-4 rounded">
+          {errorMessage}
+        </p>
+      )}
+
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
-          className="w-full border p-2 rounded mb-4"
+          placeholder="Email"
+          className="border p-2 w-full mb-4"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
 
-        <label>Password</label>
         <input
           type="password"
-          className="w-full border p-2 rounded mb-4"
+          placeholder="Password"
+          className="border p-2 w-full mb-6"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
 
         <button
           type="submit"
-          className="bg-orange-500 w-full py-2 rounded text-white hover:bg-orange-600 transition"
-          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         >
-          {loading ? "Loading..." : "Login"}
+          Login
         </button>
       </form>
     </div>
