@@ -50,7 +50,13 @@ function Navbar() {
                 <a href="/" className='hover:text-orange-500'><FaInstagram /></a>
                 <a href="/" className='hover:text-orange-500'><FaSquareGithub /></a>
                 <a href="/" className='hover:text-orange-500'><FaLinkedin /></a>
-                <button href="/login" className='bg-orange-500 px-6 py-2 font-medium rounded hover:bg-white hover:text-black transition-all duration-200 ease-in'>Login</button>
+                <Link
+                  to="/login"
+                  className="bg-orange-500 px-6 py-2 font-medium rounded hover:bg-white hover:text-black transition-all duration-200 ease-in"
+                >
+                  Login
+                </Link>
+
             </div>
 
             {/**mobile menu btn, display mobile screen */}
