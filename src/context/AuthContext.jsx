@@ -1,31 +1,43 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Ambil user dari localStorage (agar tidak hilang ketika reload)
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
+  });
 
-  // Cek token saat pertama kali load
+  // Simpan / hapus user dari localStorage setiap kali "user" berubah
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-  }, []);
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
-  // fungsi login
-  const login = (token) => {
-    localStorage.setItem("token", token);
-    setIsLoggedIn(true);
+  // Dipanggil saat login sukses
+  const login = (userData) => {
+    setUser({
+      email: userData.email,   // simpan email
+      token: userData.token,   // simpan token
+    });
   };
 
-  // fungsi logout
+  // Dipanggil saat logout
   const logout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
 }
