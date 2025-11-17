@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa6"; // <-- import ikon
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // <-- PENTING!
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showPass, setShowPass] = useState(false); // <-- state untuk show/hide password
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,7 +38,6 @@ export default function Login() {
         return;
       }
 
-      // INI YANG PENTING
       login({
         email: json.data.email,
         token: json.data.token,
@@ -73,12 +74,20 @@ export default function Login() {
         />
 
         <label>Password</label>
-        <input
-          type="password"
-          className="w-full border p-2 rounded mb-4"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div className="relative mb-4">
+          <input
+            type={showPass ? "text" : "password"} // <-- toggle type
+            className="w-full border p-2 rounded"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <span
+            onClick={() => setShowPass(!showPass)}
+            className="absolute right-3 top-2 cursor-pointer text-gray-600"
+          >
+            {showPass ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
 
         <button
           type="submit"
@@ -87,6 +96,7 @@ export default function Login() {
         >
           {loading ? "Loading..." : "Login"}
         </button>
+
         <p className="mt-4 text-sm text-center">
           Belum punya akun?{" "}
           <Link to="/register" className="text-blue-600">
