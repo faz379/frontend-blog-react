@@ -80,7 +80,6 @@ export default function Register() {
         <label>Username</label>
         <input
           type="text"
-          placeholder="Username"
           className="w-full p-2 border rounded mb-3"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -89,7 +88,6 @@ export default function Register() {
         <label>Email</label>
         <input
           type="email"
-          placeholder="Email"
           className="w-full p-2 border rounded mb-3"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +97,6 @@ export default function Register() {
         <div className="relative mb-3">
           <input
             type={showPass ? "text" : "password"}
-            placeholder="Password"
             className="w-full p-2 border rounded"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -118,6 +115,12 @@ export default function Register() {
         >
           Register
         </button>
+        <p className="mt-4 text-sm text-center">
+          Suda punya akun?{" "}
+          <Link to="/Login" className="text-blue-600">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
