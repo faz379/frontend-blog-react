@@ -12,7 +12,10 @@ import {
 } from "react-icons/fa6";
 
 export default function Navbar() {
-  const { isLoggedIn, user, logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+
+  const isLoggedIn = !!user;   // <-- Wajib, ini yang menentukan navbar berubah
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
