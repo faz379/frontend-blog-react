@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NotificationModal from "../components/NotificationModal";
-import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 
 export default function Register() {
-  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -21,35 +21,44 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // VALIDASI FRONTEND
+    if (!username || !email || !password) {
+      setModal({
+        open: true,
+        title: "Validation Error",
+        message: "All fields are required.",
+        type: "error",
+      });
+      return;
+    }
+
     try {
-        const res = await axios.post(
-            "https://api-bloghub.my.id/api/users/register",
-            {
-              username: username,
-              email: email,
-              password: password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          
+      const res = await axios.post(
+        "https://api-bloghub.my.id/api/users/register",
+        { username, email, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-      // Auto login
-      login(res.data.data);
+      console.log("Response register:", res.data);
 
+      // Modal sukses
       setModal({
         open: true,
         title: "Registration Successful",
-        message: "Your account has been created successfully.",
+        message: "Your account has been created successfully. Redirecting to login...",
         type: "success",
       });
 
+      // Redirect ke halaman login setelah 2 detik
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (error) {
+      console.log("Error register:", error.response);
+
       const msg =
-        error.response?.data?.data || "Something went wrong. Try again.";
+        error.response?.data?.data || "Something went wrong. Please try again.";
 
       setModal({
         open: true,
@@ -63,7 +72,7 @@ export default function Register() {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
 
-      {/* MODAL */}
+      {/* NOTIFICATION MODAL */}
       <NotificationModal
         isOpen={modal.open}
         title={modal.title}
@@ -76,7 +85,7 @@ export default function Register() {
         onSubmit={handleRegister}
         className="bg-white p-8 rounded-xl shadow-md w-80"
       >
-        <h2 className="text-2xl font-bold mb-6">Register</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
 
         <input
           type="text"
@@ -113,7 +122,7 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded mt-3"
+          className="w-full bg-blue-600 text-white py-2 rounded mt-3 hover:bg-blue-700 transition"
         >
           Register
         </button>
