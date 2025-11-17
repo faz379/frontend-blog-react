@@ -15,7 +15,7 @@ export default function Login() {
       const res = await fetch("https://api-bloghub.my.id/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email, password: password }),
       });
 
       const result = await res.json();
