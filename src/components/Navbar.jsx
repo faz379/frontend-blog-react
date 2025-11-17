@@ -14,7 +14,6 @@ function Navbar() {
     { path: "/bisnis", link: "Bisnis" },
     { path: "/bola", link: "Bola" },
     { path: "/teknologi", link: "Teknologi" },
-    { path: "/login", link: "Login" },
   ];
 
   return (
