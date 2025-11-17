@@ -1,73 +1,86 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // <-- state error
-  const { setToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
+    setLoading(true);
 
-    const response = await fetch("https://api-kamu.com/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    });
+    try {
+      const response = await fetch("https://api-bloghub.my.id/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const result = await response.json();
-    console.log("server response:", result);
+      const json = await response.json();
+      console.log("Response login:", json);
 
-    if (result.code === 200) {
-      setToken(result.data.token);
-      setErrorMessage(""); // bersihkan error
+      if (!response.ok) {
+        setErrorMsg(json.data || "Login gagal");
+        return;
+      }
+
+      if (!json.data?.token) {
+        setErrorMsg("Token tidak ditemukan");
+        return;
+      }
+
+      localStorage.setItem("token", json.data.token);
+
       navigate("/");
-    } else {
-      setErrorMessage(result.data); // <-- set dari backend
+    } catch (error) {
+      setErrorMsg("Tidak dapat terhubung ke server");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 mt-20 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <form
+        className="bg-white w-96 p-8 rounded-xl shadow-lg"
+        onSubmit={handleLogin}
+      >
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
-      {/* tampilkan error */}
-      {errorMessage && (
-        <p className="bg-red-100 text-red-700 p-3 mb-4 rounded">
-          {errorMessage}
-        </p>
-      )}
+        {/* ERROR MESSAGE — tampil cantik */}
+        {errorMsg && (
+          <p className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm text-center">
+            {errorMsg}
+          </p>
+        )}
 
-      <form onSubmit={handleSubmit}>
+        <label>Email</label>
         <input
           type="email"
-          placeholder="Email"
-          className="border p-2 w-full mb-4"
-          value={email}
+          className="w-full border p-2 rounded mb-4"
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
 
+        <label>Password</label>
         <input
           type="password"
-          placeholder="Password"
-          className="border p-2 w-full mb-6"
-          value={password}
+          className="w-full border p-2 rounded mb-4"
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          className="bg-orange-500 w-full py-2 rounded text-white hover:bg-orange-600 transition"
+          disabled={loading}
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
     </div>
