@@ -3,18 +3,12 @@ import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import ConfirmLogout from "./ConfirmLogout";
 
-import {
-  FaInstagram,
-  FaSquareGithub,
-  FaLinkedin,
-  FaBars,
-  FaXmark,
-} from "react-icons/fa6";
+import { FaInstagram, FaSquareGithub, FaLinkedin, FaBars, FaXmark } from "react-icons/fa6";
 
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
 
-  const isLoggedIn = !!user;   // <-- Wajib, ini yang menentukan navbar berubah
+  const isLoggedIn = !!user;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
@@ -36,7 +30,6 @@ export default function Navbar() {
           Berita<span className="bg-orange-500 text-black rounded px-1">HUB</span>
         </Link>
 
-        {/* Desktop Menu */}
         <ul className="hidden md:flex gap-12 text-lg">
           {navItems.map(({ path, link }) => (
             <li key={path}>
@@ -45,7 +38,6 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right buttons */}
         <div className="hidden lg:flex gap-4 items-center">
           <FaInstagram className="hover:text-orange-500 cursor-pointer" />
           <FaSquareGithub className="hover:text-orange-500 cursor-pointer" />
@@ -60,7 +52,6 @@ export default function Navbar() {
             </Link>
           ) : (
             <div className="relative">
-              {/* IKON USER */}
               <div
                 className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center cursor-pointer text-lg font-semibold"
                 onClick={() => setShowDropdown(!showDropdown)}
@@ -68,12 +59,9 @@ export default function Navbar() {
                 {user?.email?.charAt(0).toUpperCase() ?? "U"}
               </div>
 
-              {/* DROPDOWN */}
               {showDropdown && (
                 <div className="absolute right-0 mt-3 bg-white text-black rounded shadow-lg w-48 p-4 z-50">
-                  <p className="text-sm font-semibold mb-2 border-b pb-2">
-                    {user?.email}
-                  </p>
+                  <p className="text-sm font-semibold mb-2 border-b pb-2">{user?.email}</p>
 
                   <button
                     onClick={() => {
@@ -90,7 +78,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile icon */}
         <div className="md:hidden">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <FaXmark className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
@@ -98,7 +85,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile dropdown */}
       {isMenuOpen && (
         <ul className="md:hidden bg-white text-black px-4 py-6 space-y-4">
           {navItems.map(({ path, link }) => (
@@ -111,9 +97,7 @@ export default function Navbar() {
 
           <li>
             {!isLoggedIn ? (
-              <NavLink to="/login" onClick={() => setIsMenuOpen(false)}>
-                Login
-              </NavLink>
+              <NavLink to="/login" onClick={() => setIsMenuOpen(false)}>Login</NavLink>
             ) : (
               <button
                 onClick={() => {
@@ -129,7 +113,6 @@ export default function Navbar() {
         </ul>
       )}
 
-      {/* Logout Modal */}
       {showLogout && (
         <ConfirmLogout
           onCancel={() => setShowLogout(false)}

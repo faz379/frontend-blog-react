@@ -21,7 +21,6 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // VALIDASI FRONTEND
     if (!username || !email || !password) {
       setModal({
         open: true,
@@ -39,27 +38,19 @@ export default function Register() {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("Response register:", res.data);
-
-      // Modal sukses
       setModal({
         open: true,
         title: "Registration Successful",
-        message: "Your account has been created successfully. Redirecting to login...",
+        message: "Your account has been created. Redirecting to login...",
         type: "success",
       });
 
-      // Redirect ke halaman login setelah 2 detik
       setTimeout(() => {
         navigate("/login");
       }, 2000);
 
     } catch (error) {
-      console.log("Error register:", error.response);
-
-      const msg =
-        error.response?.data?.data || "Something went wrong. Please try again.";
-
+      const msg = error.response?.data?.data || "Something went wrong. Please try again.";
       setModal({
         open: true,
         title: "Registration Failed",
@@ -71,8 +62,6 @@ export default function Register() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-
-      {/* NOTIFICATION MODAL */}
       <NotificationModal
         isOpen={modal.open}
         title={modal.title}
@@ -103,7 +92,6 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        {/* Password field */}
         <div className="relative mb-3">
           <input
             type={showPass ? "text" : "password"}
