@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
-  const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
@@ -13,51 +12,35 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch('https://api-bloghub.my.id/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const res = await fetch("https://api-bloghub.my.id/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-      console.log("Server response", data);
+      const result = await res.json();
+      console.log(result);
 
-      if (!response.ok) {
-        // Asumsi backend menaruh pesan error di data.data
-        alert(data.data || "Terjadi Kesalahan");
+      if (!result.data || !result.data.token) {
+        alert("Login gagal");
         return;
       }
 
-      // Periksa struktur JSON yang benar
-      // Misal backend: { code: 200, status: "OK", data: { token: "..." } }
-      const token = data.data?.token;
-      if (!token) {
-        alert(data.data?.message || "Login gagal: token tidak ditemukan");
-        return;
-      }
-
-      localStorage.setItem('token', token);
-      navigate('/');
-
-    } catch (error) {
-      console.error("Fetch error:", error);
-      alert("Gagal koneksi ke server");
+      login(result.data.token);
+      window.location.href = "/";
+    } catch (err) {
+      alert("Server error");
     } finally {
-      setLoading(false); // pastikan loading mati
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white w-96 p-8 rounded-xl shadow-lg"
-      >
+      <form className="bg-white w-96 p-8 rounded-xl shadow-lg" onSubmit={handleLogin}>
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
-        <label className="font-medium">Email</label>
+        <label>Email</label>
         <input
           type="email"
           className="w-full border p-2 rounded mb-4"
@@ -65,7 +48,7 @@ export default function Login() {
           required
         />
 
-        <label className="font-medium">Password</label>
+        <label>Password</label>
         <input
           type="password"
           className="w-full border p-2 rounded mb-4"
@@ -75,18 +58,11 @@ export default function Login() {
 
         <button
           type="submit"
-          className="bg-orange-500 px-6 py-2 font-medium rounded hover:bg-white hover:text-black transition-all w-full"
+          className="bg-orange-500 w-full py-2 rounded text-white hover:bg-orange-600 transition"
           disabled={loading}
         >
           {loading ? "Loading..." : "Login"}
         </button>
-
-        <p className="text-sm text-center mt-4">
-          Belum punya akun?{" "}
-          <Link to="/register" className="text-blue-600">
-            Register
-          </Link>
-        </p>
       </form>
     </div>
   );
