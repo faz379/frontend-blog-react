@@ -23,9 +23,9 @@ export default function Register() {
 
     try {
       const res = await axios.post("https://api-bloghub.my.id/api/users/register", {
-        name: username,
-        email,
-        password,
+        username: username,
+        email: email,
+        password: password,
       });
 
       // Auto login
