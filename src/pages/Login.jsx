@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // <-- PENTING!
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +36,11 @@ export default function Login() {
         return;
       }
 
-      localStorage.setItem("token", json.data.token);
+      // ⬇⬇⬇ INI YANG PENTING
+      login({
+        email: json.data.email,
+        token: json.data.token,
+      });
 
       navigate("/");
     } catch (error) {
@@ -52,7 +58,6 @@ export default function Login() {
       >
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
-        {/* ERROR MESSAGE — tampil cantik */}
         {errorMsg && (
           <p className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm text-center">
             {errorMsg}
