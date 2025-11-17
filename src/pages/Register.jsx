@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationModal from "../components/NotificationModal";
 import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa6"; // <-- import ikon
 
 export default function Register() {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ export default function Register() {
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
 
+        <label>Username</label>
         <input
           type="text"
           placeholder="Username"
@@ -84,6 +86,7 @@ export default function Register() {
           onChange={(e) => setUsername(e.target.value)}
         />
 
+        <label>Email</label>
         <input
           type="email"
           placeholder="Email"
@@ -92,6 +95,7 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        <label>Password</label>
         <div className="relative mb-3">
           <input
             type={showPass ? "text" : "password"}
@@ -104,13 +108,13 @@ export default function Register() {
             onClick={() => setShowPass(!showPass)}
             className="absolute right-3 top-2 cursor-pointer text-gray-600"
           >
-            {showPass ? "🙈" : "👁️"}
+            {showPass ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-orange-500 text-white py-2 rounded mt-3 hover:bg-blue-700 transition"
+          className="w-full bg-orange-500 text-white py-2 rounded mt-3 hover:bg-orange-600 transition"
         >
           Register
         </button>
