@@ -1,121 +1,113 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import NotificationModal from "../components/NotificationModal";
 import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 export default function Register() {
-  const navigate = useNavigate();
-  const { login } = useAuth(); // otomatis login setelah registrasi
+  const { login } = useAuth();
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const [showPass, setShowPass] = useState(false);
+
+  const [modal, setModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    type: "success",
+  });
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setErrorMsg("");
-    setSuccessMsg("");
-    setLoading(true);
 
     try {
-      const response = await fetch("https://api-bloghub.my.id/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-        }),
+      const res = await axios.post("http://localhost:3000/api/users/register", {
+        username,
+        email,
+        password,
       });
 
-      const json = await response.json();
-      console.log("Response register:", json);
+      // Auto login
+      login(res.data.data);
 
-      if (!response.ok) {
-        setErrorMsg(json.data || "Registration failed");
-        return;
-      }
-
-      setSuccessMsg("Registration successful!");
-
-      // ----------------------------
-      // AUTO LOGIN SETELAH REGISTER
-      // ----------------------------
-      login({
-        email: json.data.email,
-        token: json.data.token,
+      setModal({
+        open: true,
+        title: "Registration Successful",
+        message: "Your account has been created successfully.",
+        type: "success",
       });
 
-      navigate("/");
     } catch (error) {
-      setErrorMsg("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
+      const msg =
+        error.response?.data?.data || "Something went wrong. Try again.";
+
+      setModal({
+        open: true,
+        title: "Registration Failed",
+        message: msg,
+        type: "error",
+      });
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
+
+      {/* MODAL */}
+      <NotificationModal
+        isOpen={modal.open}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+        onClose={() => setModal({ ...modal, open: false })}
+      />
+
       <form
-        className="bg-white w-96 p-8 rounded-xl shadow-lg"
         onSubmit={handleRegister}
+        className="bg-white p-8 rounded-xl shadow-md w-80"
       >
-        <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
+        <h2 className="text-2xl font-bold mb-6">Register</h2>
 
-        {/* SUCCESS MESSAGE */}
-        {successMsg && (
-          <p className="bg-green-100 text-green-700 p-2 rounded mb-4 text-sm text-center">
-            {successMsg}
-          </p>
-        )}
-
-        {/* ERROR MESSAGE */}
-        {errorMsg && (
-          <p className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm text-center">
-            {errorMsg}
-          </p>
-        )}
-
-        <label>Name</label>
         <input
           type="text"
-          className="w-full border p-2 rounded mb-4"
-          onChange={(e) => setName(e.target.value)}
-          required
+          placeholder="Username"
+          className="w-full p-2 border rounded mb-3"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
-        <label>Email</label>
         <input
           type="email"
-          className="w-full border p-2 rounded mb-4"
+          placeholder="Email"
+          className="w-full p-2 border rounded mb-3"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
 
-        <label>Password</label>
-        <input
-          type="password"
-          className="w-full border p-2 rounded mb-4"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        {/* Password field */}
+        <div className="relative mb-3">
+          <input
+            type={showPass ? "text" : "password"}
+            placeholder="Password"
+            className="w-full p-2 border rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <span
+            onClick={() => setShowPass(!showPass)}
+            className="absolute right-3 top-2 cursor-pointer text-gray-600"
+          >
+            {showPass ? "🙈" : "👁️"}
+          </span>
+        </div>
 
         <button
           type="submit"
-          className="bg-orange-500 w-full py-2 rounded text-white hover:bg-orange-600 transition"
-          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded mt-3"
         >
-          {loading ? "Loading..." : "Register"}
+          Register
         </button>
-
-        <p className="mt-4 text-sm text-center">
-          Sudah punya akun?{" "}
-          <Link to="/login" className="text-blue-600">
-            Login
-          </Link>
-        </p>
       </form>
     </div>
   );
