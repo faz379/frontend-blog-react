@@ -32,7 +32,7 @@ export default function Login() {
 
       // Periksa struktur JSON yang benar
       // Misal backend: { code: 200, status: "OK", data: { token: "..." } }
-      const token = data.token ?? data.data?.token;
+      const token = data.data?.token;
       if (!token) {
         alert(data.data?.message || "Login gagal: token tidak ditemukan");
         return;
