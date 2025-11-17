@@ -23,7 +23,7 @@ export default function Register() {
 
     try {
       const res = await axios.post("https://api-bloghub.my.id/api/users/register", {
-        username,
+        name: username,
         email,
         password,
       });
